@@ -1,0 +1,18 @@
+extends _bootstrap
+append styles
+    // Custom styles for this template
+    link(href='/css/navbar-static-top.css', rel='stylesheet')
+block body
+    // Static navbar
+    +navbar-static("Gyungbuk SoS lab","navbar")
+        +nav_item("/","active") Home
+        +nav_item_dropdown("#")(label="Dropdown")
+            +nav_item("/admin/regions") Admin
+    .container
+        form(action = "/admin/regions/add_item", method = "POST", enctype='multipart/form-data')
+            .form-groupvid
+                label(for='vid') Region ID
+                input#vid.form-control(type='text', placeholder='Region ID', value=region_id, name='vrid', readonly='')
+            +input("text","SceneName","Scene Name","SceneName","SceneName")
+            +input("file","VRImage","Virtual Reality Image","Virtual Reality Image","VRImage")
+            +submit("Add")
