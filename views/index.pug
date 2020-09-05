@@ -12,11 +12,10 @@ block body
 
     .container
         //Iteration for listing village item
-        for item in villageList
+        for item in regionList
             .jumbotron
-                // Village name
+                // Region name
                 h3= item.name
-                // Placeholder for village description
-                p= item.summary_text
-                a.btn.btn-lg.btn-primary(href='/regions/' + item._id, role='button') Detail »
+                p= item.location
+                a.btn.btn-lg.btn-primary(href='/region/' + item._id, role='button') Detail »
                 

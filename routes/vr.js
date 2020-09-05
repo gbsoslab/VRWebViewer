@@ -8,7 +8,7 @@ var VRItem = require('../models/vrModel');
 //});
 
 router.get('/:vid', function(req, res) {
-    VRItem.find({community_id: req.params.vid}, function (err, vritem) {
+    VRItem.find({region_id: req.params.vid}, function (err, vritem) {
         if (err) return res.status(500).json({ error: err });
         if (!vritem) return res.status(404).json({ error: 'vritem not found' });
         return res.render('vr_item', { vrlist: vritem });
