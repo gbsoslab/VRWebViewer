@@ -23,7 +23,7 @@ block body
         for item in regionList
             .jumbotron
                 p= item.name
-                p= item.summary_text
+                p= item.location
                 a.btn.btn-primary(href='/admin/regions/add_vr/' + item._id, role='button') Add VR »
                 a.btn(class="btn-danger",role="button",onclick="deleteMe('"+ item._id +"');") Delete
         +a-btn-primary("/admin/regions/new") Add new region
