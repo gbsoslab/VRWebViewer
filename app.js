@@ -19,6 +19,7 @@ mongoose.connect('mongodb://localhost/vr_repo', { useNewUrlParser: true });
 
 var indexRouter = require('./routes/index');
 var vrRouter = require('./routes/vr');
+var regionRouter = require('./routes/region');
 
 // Admin route
 var adminWorldRouter = require('./routes/admin');
@@ -50,6 +51,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/vr', vrRouter);
 app.use('/admin/regions', adminWorldRouter);// Admin 
+app.use('/region/', regionRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
