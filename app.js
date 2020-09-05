@@ -32,7 +32,7 @@ app.use(bodyParser.json());
 // File Upload
 const fileUpload = require('express-fileupload');
 // default options
-app.use(fileUpload());
+//app.use(fileUpload());
 //app.use(bodyParser.urlencoded());
 
 // view engine setup

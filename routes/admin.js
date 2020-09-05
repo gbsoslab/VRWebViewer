@@ -2,14 +2,14 @@ var express = require('express');
 var router = express.Router();
 var RegionModel = require('../models/regionModel');
 var VRItem = require('../models/vrModel')
-var fs = require('fs')
+const upload = require("../models/upload");
 
 router.get('/', function (req, res) {
-    RegionModel.find(function (err, villages) {
+    RegionModel.find(function (err, regions) {
         if (err) {
             return res.status(500).send({ error: 'database failure' });
         }
-        res.render('region-list-view', { regionList: villages });
+        res.render('region-list-view', { regionList: regions });
     });
 });
 
@@ -18,11 +18,11 @@ router.get('/new', function (req, res) {
 });
 
 router.post('/new', function (req, res) {
-    var village = new RegionModel();
+    var region = new RegionModel();
     var body = req.body;
-    village.name = body.villageName;
-    village.location = body.location;
-    village.save(function (err) {
+    region.name = body.regionName;
+    region.location = body.regionLocation;
+    region.save(function (err) {
         if (err) {
             console.error(err);
             res.send(err);
@@ -32,50 +32,31 @@ router.post('/new', function (req, res) {
     res.redirect('/admin/regions');
 });
 
-router.post('/add_item', function (req, res) {
-    var vritem = new VRItem();
-    var body = req.body;
-
-    if (!req.files)
-        return res.status(400).send('No files were uploaded.');
-
-    /*
-    // VR Image
-    let VRImage = req.files.VRImage;
-    let VRImagePath = '../public/images/360/'+ VRImage.name;
-
-    // Use the mv() method to place the file somewhere on your server
-    VRImage.mv(VRImagePath, function(err) {
-        if (err)
-            return res.status(500).send(err);
-
-        //res.send('File uploaded!');
-    });
-
-    // VRThumbnail
-    let VRThumb = req.files.VRThumb;
-    let VRThumbPath = '../public/images/360/'+ VRThumb.name;
-    // Use the mv() method to place the file somewhere on your server
-    VRThumb.mv(VRThumbPath, function(err) {
-        if (err)
-            return res.status(500).send(err);
-
-        //res.send('File uploaded!');
-    });
-    */
-    vritem.region_id = body.vrid;
-    vritem.scene_name = body.SceneName;
-    //vritem.image_file = '/images/360/' + VRImage.name;
-    //vritem.thumb_file = '/images/360/' + VRThumb.name;
-    vritem.save(function (err) {
-        if (err) {
-            console.error(err);
-            res.send(err);
-            return;
+router.post('/add_item', async (req, res) => {
+    try 
+    {
+        await upload(req, res);
+        if (req.file == undefined) {
+            return res.send(`You must select a file.`);
         }
-    });
-    res.redirect('/admin/regions');
+
+        var vritem = new VRItem();
+        var body = req.body;
+
+        if (!req.file)
+            return res.status(400).send('No files were uploaded.');
+   
+        vritem.region_id = body.vrid;
+        vritem.scene_name = body.SceneName;
+        vritem.image_file = req.file.filename;
+
+        res.redirect('/admin/regions');
+  } catch (error) {
+    console.log(error);
+    return res.send(`Error when trying upload image: ${error}`);
+  }
 });
+
 
 
 router.delete('/:id', function (req, res) {
@@ -111,7 +92,7 @@ router.delete('/:id', function (req, res) {
 
 router.get('/add_vr/:id', function (req, res) {
     console.log(req.params.id);
-    res.render('vr-add', {community_id:req.params.id});
+    res.render('vr-add', {region_id:req.params.id});
 });
 
 router.get('/:id', function (req, res) {

@@ -10,7 +10,7 @@ block body
         +nav_item_dropdown("#")(label="Dropdown")
             +nav_item("/admin/regions", "active") Admin
     .container
-        +a-btn-primary("/admin/regions/new") Add new region
+        
         script.
             function deleteMe (id) {
                 var url = '/admin/regions/' + id;
@@ -26,3 +26,4 @@ block body
                 p= item.summary_text
                 a.btn.btn-primary(href='/admin/regions/add_vr/' + item._id, role='button') Add VR »
                 a.btn(class="btn-danger",role="button",onclick="deleteMe('"+ item._id +"');") Delete
+        +a-btn-primary("/admin/regions/new") Add new region
