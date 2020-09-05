@@ -21,14 +21,14 @@ html
             // 360-degree image.
 
             if vrlist.length != 0
-                a-sky#image-360(radius='10', src='#'+ vrlist[0]._id)
+                a-sky#image-360(radius='10', src='image/' + vrlist[0].filename)
             else
                 a-sky#image-360(radius='10', src='#default')
             
             // Image links.
-            a-entity#links(layout='type: line; margin: 1.5', position='0 -1 -4')
-                for item in vrlist
-                    a-entity(template='src: #link', data-src='#'+ item._id, data-thumb='#'+ item._id +'-thumb')
+            //a-entity#links(layout='type: line; margin: 1.5', position='0 -1 -4')
+                //for item in vrlist
+                    //a-entity(template='src: #link', data-src=+ item._id, data-thumb='#'+ item._id +'-thumb')
             // Camera + cursor.
             a-entity(camera='', look-controls='')
                 a-cursor#cursor(animation__click='property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150', animation__fusing='property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500', event-set__1='_event: mouseenter; color: springgreen', event-set__2='_event: mouseleave; color: black', fuse='true', raycaster='objects: .link')
