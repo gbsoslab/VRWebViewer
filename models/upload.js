@@ -12,10 +12,9 @@ var storage = new GridFsStorage({
       const filename = `${Date.now()}-vr_images-${file.originalname}`;
       return filename;
     }
-
-    console.log('##')
+    
     return {
-      bucketName: "photos",
+      bucketName: "images",
       filename: `${Date.now()}-vr_images-${file.originalname}`
     };
   }
