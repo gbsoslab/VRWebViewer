@@ -13,11 +13,15 @@ block body
         
         script.
             function deleteMe (id) {
-                var url = '/admin/regions/' + id;
+                var url = '/admin/regions/delete/' + id;
                 $.ajax({
                     type: "DELETE",
                     url: url,
-                    data: id
+                    data: id,
+                    success: function(response) {
+                        window.location.href = "/admin/regions/";
+                    },
+
                 });
             }
         for item in regionList
