@@ -49,7 +49,13 @@ router.post('/add_item', async (req, res) => {
         vritem.region_id = body.vrid;
         vritem.scene_name = body.SceneName;
         vritem.image_file = req.file.filename;
-
+        vritem.save(function (err) {
+            if (err) {
+                console.error(err);
+                res.send(err);
+                return;
+            }
+        });
         res.redirect('/admin/regions');
   } catch (error) {
     console.log(error);
