@@ -45,10 +45,10 @@ router.post('/add_item', async (req, res) => {
 
         if (!req.file)
             return res.status(400).send('No files were uploaded.');
-   
+
         vritem.region_id = body.vrid;
         vritem.scene_name = body.SceneName;
-        vritem.image_file = req.file.filename;
+        vritem.image_file = req.file.id;
         vritem.save(function (err) {
             if (err) {
                 console.error(err);
@@ -63,12 +63,36 @@ router.post('/add_item', async (req, res) => {
   }
 });
 
+var mongoose = require('mongoose');
+// init gfs
+const mongoURI = "mongodb://localhost:27017/vr_images";
 
+// connection
+const conn = mongoose.createConnection(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
-router.delete('/:id', function (req, res) {
-    console.log('triggered');
-    console.log(req.params.id);
-    RegionModel.remove({ _id:req.params.id }, function (err, output) {
+let gfs;
+conn.once("open", () => {
+  // init stream
+  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "images"
+  });
+});
+
+router.delete('/delete/:id', function (req, res) {
+    
+    VRItem.find({'region_id': req.params.id}, function (err, vritem) {
+        if (err) return res.status(500).json({ error: err });
+        if (vritem)
+        {
+            const obj_id = new mongoose.Types.ObjectId(vritem[0].image_file);
+            gfs.delete(obj_id);
+        }
+    });
+
+    RegionModel.deleteOne({ _id:req.params.id }, function (err, output) {
         if(err) return res.status(500).json({ error: "database failure" });
 
         /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
@@ -76,12 +100,12 @@ router.delete('/:id', function (req, res) {
         res.json({ message: "book deleted" });
         */
 
-        console.log('check');
+        //console.log('check');
 
         //res.end();
     })
 
-    VRItem.remove({ region_id:req.params.id }, function (err, output) {
+    VRItem.deleteOne({ region_id:req.params.id }, function (err, output) {
         if(err) return res.status(500).json({ error: "database failure" });
 
         /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
@@ -89,11 +113,12 @@ router.delete('/:id', function (req, res) {
         res.json({ message: "book deleted" });
         */
 
-        console.log('check');
+        //console.log(output);
 
         //res.end();
-    })
-    res.redirect('/admin/regions/');
+    });
+    
+    res.redirect(303,'/admin/regions/');
 });
 
 router.get('/add_vr/:id', function (req, res) {
