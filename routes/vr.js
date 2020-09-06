@@ -30,12 +30,12 @@ router.get('/:vid', function(req, res) {
     VRItem.find({region_id: req.params.vid}, function (err, vritem) {
         if (err) return res.status(500).json({ error: err });
         if (!vritem) return res.status(404).json({ error: 'vritem not found' });
-
-        gfs.find({image_file:vritem.image_file}).toArray((err, files) => {
+        gfs.find({'filename':vritem[0].image_file}).toArray((err, files) => {
 		    // check if files
 		    if (!files || files.length === 0) {
+		    	console.log(files)
 		      return res.render("vr_item", {
-		        files: false
+		        vrlist: files
 		      });
 		    } 
 	    	else 
