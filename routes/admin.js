@@ -105,7 +105,7 @@ router.delete('/delete/:id', function (req, res) {
         //res.end();
     })
 
-    VRItem.deleteOne({ region_id:req.params.id }, function (err, output) {
+    VRItem.deleteMany({ region_id:req.params.id }, function (err, output) {
         if(err) return res.status(500).json({ error: "database failure" });
 
         /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
