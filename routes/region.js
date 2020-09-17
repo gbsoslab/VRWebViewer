@@ -11,7 +11,7 @@ router.get('/:id', function (req, res) {
 
         VRModel.find({region_id: req.params.id}, function (err, vrmodels){
         	if (err) return res.status(500).json({ error: err });
-        	if(!vrmodels) res.render('region-view', { region: region, vrs: [] });
+        	if(!vrmodels) res.render('region-view', { region: region, vrList: [] });
 
         	res.render('region-view', { region: region, vrList: vrmodels });
         });
