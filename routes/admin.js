@@ -5,11 +5,18 @@ var VRItem = require('../models/vrModel')
 const upload = require("../models/upload");
 
 router.get('/', function (req, res) {
-    RegionModel.find(function (err, regions) {
-        if (err) {
-            return res.status(500).send({ error: 'database failure' });
-        }
-        res.render('region-list-view', { regionList: regions });
+    RegionModel.aggregate([{
+            $lookup: {
+                from: "vritems", // collection to join
+                localField: "_id",//field from the input documents
+                foreignField: "region_id",//field from the documents of the "from" collection
+                as: "vrList"// output array field
+            }
+        }], function (err, data) {
+        if (err) return res.status(500).send({ error: 'database failure' });
+        console.log(data)
+        res.render('region-list-view', { regionList: data});
+        
     });
 });
 
@@ -46,9 +53,14 @@ router.post('/add_item', async (req, res) => {
         if (!req.file)
             return res.status(400).send('No files were uploaded.');
 
-        vritem.region_id = body.vrid;
+        vritem.region_id = new mongoose.Types.ObjectId(body.vrid);
         vritem.scene_name = body.SceneName;
         vritem.image_file = req.file.id;
+        vritem.link_l = body.leftPos;
+        vritem.link_u = body.upPos;
+        vritem.link_r = body.rightPos;
+        vritem.link_d = body.downPos;
+
         vritem.save(function (err) {
             if (err) {
                 console.error(err);
@@ -87,8 +99,11 @@ router.delete('/delete/:id', function (req, res) {
         if (err) return res.status(500).json({ error: err });
         if (vritem)
         {
-            const obj_id = new mongoose.Types.ObjectId(vritem[0].image_file);
-            gfs.delete(obj_id);
+            for(var item of vritem)
+            {
+                const obj_id = new mongoose.Types.ObjectId(item.image_file);
+                gfs.delete(obj_id);
+            }
         }
     });
 
@@ -105,7 +120,7 @@ router.delete('/delete/:id', function (req, res) {
         //res.end();
     })
 
-    VRItem.deleteOne({ region_id:req.params.id }, function (err, output) {
+    VRItem.deleteMany({ region_id:req.params.id }, function (err, output) {
         if(err) return res.status(500).json({ error: "database failure" });
 
         /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )

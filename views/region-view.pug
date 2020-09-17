@@ -9,6 +9,10 @@ block body
             +nav_item("/admin/regions","active") Admin
     .container
         .jumbotron
-            h1= region.name
+            h2= region.name
             p= 'Location:' + region.location
-            a.btn.btn-lg.btn-primary(href='/vr/' + region._id, role='button') VR Tour »
+            for item in vrList
+                div
+                    | #{item.scene_name} : 
+                    | 
+                    a.btn.btn-sm.btn-primary(href='/vr/' + item._id, role='button') VR Tour »

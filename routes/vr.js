@@ -27,7 +27,7 @@ conn.once("open", () => {
 
 
 router.get('/:vid', function(req, res) {
-    VRItem.find({region_id: req.params.vid}, function (err, vritem) {
+    VRItem.find({_id: req.params.vid}, function (err, vritem) {
         if (err) return res.status(500).json({ error: err });
         if (!vritem) return res.status(404).json({ error: 'vritem not found' });
 
