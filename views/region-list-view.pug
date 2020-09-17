@@ -24,10 +24,33 @@ block body
 
                 });
             }
+
+            function deleteVR (id) {
+                var url = '/admin/regions/vr_del/' + id;
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    data: id,
+                    success: function(response) {
+                        window.location.href = "/admin/regions/";
+                    },
+
+                });
+            }
+
         for item in regionList
             .jumbotron
                 p= item.name
                 p= item.location
+
+                for vitem in item.vrList
+                    div
+                    | #{vitem.scene_name} : 
+                    | 
+                    a.btn.btn-sm.btn-primary(href='/admin/regions/update_vr/' + vitem._id, role='button') Update Scene
+                    a.btn.btn-sm.btn-danger(role="button",onclick="deleteVR('"+ item._id +"');") Delete Scene
+                    p
+
                 a.btn.btn-primary(href='/admin/regions/add_vr/' + item._id, role='button') Add VR »
-                a.btn(class="btn-danger",role="button",onclick="deleteMe('"+ item._id +"');") Delete
+                a.btn(class="btn-danger",role="button",onclick="deleteMe('"+ item._id +"');") Delete Region
         +a-btn-primary("/admin/regions/new") Add new region
