@@ -9,6 +9,13 @@ router.get('/', function (req, res) {
         if (err) {
             return res.status(500).send({ error: 'database failure' });
         }
+
+        VRItem.find({region_id: req.params.id}, function (err, vrmodels){
+            if (err) return res.status(500).json({ error: err });
+            if(!vrmodels) res.render('region-view', { region: region, vrs: [] });
+
+            res.render('region-view', { region: region, vrList: vrmodels });
+        });
         res.render('region-list-view', { regionList: regions });
     });
 });
