@@ -87,8 +87,11 @@ router.delete('/delete/:id', function (req, res) {
         if (err) return res.status(500).json({ error: err });
         if (vritem)
         {
-            const obj_id = new mongoose.Types.ObjectId(vritem[0].image_file);
-            gfs.delete(obj_id);
+            for(var item of vritem)
+            {
+                const obj_id = new mongoose.Types.ObjectId(item.image_file);
+                gfs.delete(obj_id);
+            }
         }
     });
 
