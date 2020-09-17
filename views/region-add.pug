@@ -2,8 +2,6 @@ extends _bootstrap
 append styles
     // Custom styles for this template
     link(href='/css/navbar-static-top.css', rel='stylesheet')
-    link(href='/css/dragdrop.css', rel='stylesheet')
-    script(src='/javascripts/dragdrop.js')
 block body
     // Static navbar
     +navbar-static("Gyungbuk SoS lab","navbar")
@@ -15,17 +13,3 @@ block body
             +input("text","regionName","Region name here", "region name","regionName")
             +input("text","regionLocation", "Location of the region","region location","regionLocation")
             +submit("Add")
-
-        .example-parent
-          .item-lists(ondragover='onDragOver(event);', ondrop='onDrop(event);')
-            #up.draggable(draggable='true', ondragstart='onDragStart(event);', ondragover='onDragOver(event);', ondrop='onDrop(event);')
-              img.image(src='/images/up.png', style='width:50px; height:50px;')
-            #down.draggable(draggable='true', ondragstart='onDragStart(event);', ondragover='onDragOver(event);', ondrop='onDrop(event);')
-              img.image(src='/images/down.png', style='width:50px; height:50px;')
-            #left.draggable(draggable='true', ondragstart='onDragStart(event);', ondragover='onDragOver(event);', ondrop='onDrop(event);')
-              img.image(src='/images/left.png', style='width:50px; height:50px;')
-            #right.draggable(draggable='true', ondragstart='onDragStart(event);', ondragover='onDragOver(event);', ondrop='onDrop(event);')
-              img.image(src='/images/right.png', style='width:50px; height:50px;')
-
-          .dropzone(ondragover='onDragOver(event);', ondrop='onDrop(event);')
-            | dropzone
