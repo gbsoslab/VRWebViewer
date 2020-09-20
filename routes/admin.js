@@ -144,12 +144,59 @@ router.delete('/vrscene_del/:id', function (req, res) {
 });
 
 router.get('/add_vr/:id', function (req, res) {
-    console.log(req.params.id);
     res.render('vr-add', {region_id:req.params.id});
 });
 
-router.get('/:id', function (req, res) {
+/*
+Update VRitems
+*/
+router.get('/update_vr/:id', async (req, res) => {
+    VRItem.findOne({'_id': new mongoose.Types.ObjectId(req.params.id)}, function (err, vritem) {
+        if (err) return res.status(500).json({ error: err });
+        if (vritem)
+        {
+            res.render('vr_update', {vrItem:vritem});     
+        }
+        else
+            return res.status(404).json({ error: 'VR Item not found' });
+    });
+});
 
+router.post('/update_vr', async (req, res) => {
+    try 
+    {
+        await upload(req, res);
+        if (req.file == undefined) {
+            return res.send(`You must select a file.`);
+        }
+
+        var vritem = new VRItem();
+        var body = req.body;
+
+        if (!req.file)
+            return res.status(400).send('No files were uploaded.');
+
+        vritem.region_id = new mongoose.Types.ObjectId(body.vrid);
+        vritem.scene_name = body.SceneName;
+        vritem.image_file = req.file.id;
+        vritem.left_name = body.leftPos;
+        vritem.up_name = body.upPos;
+        vritem.right_name = body.rightPos;
+        vritem.down_name = body.downPos;
+
+        vritem.save(function (err) {
+            if (err) {
+                console.error(err);
+                res.send(err);
+                return;
+            }
+        });
+
+        res.redirect('/admin/regions');
+  } catch (error) {
+    console.log(error);
+    return res.send(`Error when trying upload image: ${error}`);
+  }
 });
 
 module.exports = router;
