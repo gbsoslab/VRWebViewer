@@ -3,6 +3,7 @@ var router = express.Router();
 var RegionModel = require('../models/regionModel');
 var VRItem = require('../models/vrModel')
 const upload = require("../models/upload");
+var connectionModel = require('../models/connectModel')
 
 router.get('/', function (req, res) {
     RegionModel.aggregate([{
@@ -14,7 +15,6 @@ router.get('/', function (req, res) {
             }
         }], function (err, data) {
         if (err) return res.status(500).send({ error: 'database failure' });
-        console.log(data)
         res.render('region-list-view', { regionList: data});
         
     });
@@ -56,10 +56,10 @@ router.post('/add_item', async (req, res) => {
         vritem.region_id = new mongoose.Types.ObjectId(body.vrid);
         vritem.scene_name = body.SceneName;
         vritem.image_file = req.file.id;
-        vritem.link_l = body.leftPos;
-        vritem.link_u = body.upPos;
-        vritem.link_r = body.rightPos;
-        vritem.link_d = body.downPos;
+        vritem.left_name = body.leftPos;
+        vritem.up_name = body.upPos;
+        vritem.right_name = body.rightPos;
+        vritem.down_name = body.downPos;
 
         vritem.save(function (err) {
             if (err) {
@@ -68,6 +68,7 @@ router.post('/add_item', async (req, res) => {
                 return;
             }
         });
+
         res.redirect('/admin/regions');
   } catch (error) {
     console.log(error);

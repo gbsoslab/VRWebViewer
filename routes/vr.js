@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var VRItem = require('../models/vrModel');
+var Connections = require('../models/connectModel')
 var mongoose = require('mongoose');
 
 /* GET home page. */
@@ -27,16 +28,32 @@ conn.once("open", () => {
 
 
 router.get('/:vid', function(req, res) {
-    VRItem.find({_id: req.params.vid}, function (err, vritem) {
+    VRItem.findOne({_id: req.params.vid}, function (err, vritem) {
         if (err) return res.status(500).json({ error: err });
         if (!vritem) return res.status(404).json({ error: 'vritem not found' });
 
-        return res.render("vr_item", { vrimage_id: vritem[0].image_file });
+        
+
+        var linkList = {left:vritem.left_name, up:vritem.up_name, right:vritem.right_name, down:vritem.down_name};
+        //console.log(linkList);
+        return res.render("vr_item", { vrimage_id: vritem.image_file, arrowList:linkList });
+    })
+});
+
+router.get('/scene/:scene_name', function(req, res) {
+    VRItem.findOne({scene_name: req.params.scene_name}, function (err, vritem) {
+        if (err) return res.status(500).json({ error: err });
+        if (!vritem) return res.status(404).json({ error: 'vritem not found' });
+
+        var linkList = {left:vritem.left_name, up:vritem.up_name, right:vritem.right_name, down:vritem.down_name};
+        //console.log(linkList);
+        return res.redirect("/vr/" + vritem._id);
+        //return res.render("vr_item", { vrimage_id: vritem.image_file, arrowList:linkList });
     })
 });
 
 router.get("/image/:image_id", (req, res) => {
-  console.log('id', req.params.id)
+  //console.log('id', req.params.id)
   const obj_id = new mongoose.Types.ObjectId(req.params.image_id);
   const file = gfs
     .find(obj_id)
