@@ -144,12 +144,41 @@ router.delete('/vrscene_del/:id', function (req, res) {
 });
 
 router.get('/add_vr/:id', function (req, res) {
-    console.log(req.params.id);
     res.render('vr-add', {region_id:req.params.id});
 });
 
-router.get('/:id', function (req, res) {
+/*
+Update VRitems
+*/
+router.get('/update_vr/:id', async (req, res) => {
+    VRItem.findOne({'_id': new mongoose.Types.ObjectId(req.params.id)}, function (err, vritem) {
+        if (err) return res.status(500).json({ error: err });
+        if (vritem)
+        {
+            res.render('vr_update', {vrItem:vritem});     
+        }
+        else
+            return res.status(404).json({ error: 'VR Item not found' });
+    });
+});
 
+router.post('/update_vr', function (req, res) {
+    var body = req.body;
+    VRItem.findOne({_id:req.body.SceneID}, function(error, vritem){
+        vritem.left_name    = req.body.leftPos;
+        vritem.up_name      = req.body.upPos;
+        vritem.right_name   = req.body.rightPos;
+        vritem.down_name    = req.body.downPos;
+        
+        vritem.save(function (err) {
+            if (err) {
+                console.error(err);
+                res.send(err);
+                return;
+            }
+        });
+    });
+    res.redirect('/admin/regions');
 });
 
 module.exports = router;
