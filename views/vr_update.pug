@@ -4,18 +4,13 @@ append styles
     link(href='/css/navbar-static-top.css', rel='stylesheet')
 
 block body
-    script(type='text/javascript').
-        function readSingleFile(e) {
-                const name = e[0].name;
-                document.getElementById("file-label").textContent = name;
-        }
     // Static navbar
     +navbar-static("Gyungbuk SoS lab","navbar")
         +nav_item("/","active") Home
         +nav_item_dropdown("#")(label="Dropdown")
             +nav_item("/admin/regions") Admin
     .container
-        form(action = "/admin/regions/add_item", method = "POST", enctype='multipart/form-data')
+        form(action = "/admin/regions/update_vr", method = "POST")
             .form-groupvid
                 label(for='vid') Region ID
                 input#vid.form-control(type='text', placeholder='Region ID', value=vrItem.region_id, name='vrid', readonly='')
@@ -29,7 +24,6 @@ block body
             label(for='file') Previous Image File: 
             |
             img#file.image(src='/vr/image/'+ vrItem.image_file, style='width:100px; height:100px;')
-            input#file.form-control(type='file', placeholder='Image', name='file', on change="readSingleFile(this.files)")
             p
             label(for='left') Left Position
             | 

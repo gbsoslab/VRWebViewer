@@ -162,28 +162,14 @@ router.get('/update_vr/:id', async (req, res) => {
     });
 });
 
-router.post('/update_vr', async (req, res) => {
-    try 
-    {
-        await upload(req, res);
-        if (req.file == undefined) {
-            return res.send(`You must select a file.`);
-        }
-
-        var vritem = new VRItem();
-        var body = req.body;
-
-        if (!req.file)
-            return res.status(400).send('No files were uploaded.');
-
-        vritem.region_id = new mongoose.Types.ObjectId(body.vrid);
-        vritem.scene_name = body.SceneName;
-        vritem.image_file = req.file.id;
-        vritem.left_name = body.leftPos;
-        vritem.up_name = body.upPos;
-        vritem.right_name = body.rightPos;
-        vritem.down_name = body.downPos;
-
+router.post('/update_vr', function (req, res) {
+    var body = req.body;
+    VRItem.findOne({_id:req.body.SceneID}, function(error, vritem){
+        vritem.left_name    = req.body.leftPos;
+        vritem.up_name      = req.body.upPos;
+        vritem.right_name   = req.body.rightPos;
+        vritem.down_name    = req.body.downPos;
+        
         vritem.save(function (err) {
             if (err) {
                 console.error(err);
@@ -191,12 +177,8 @@ router.post('/update_vr', async (req, res) => {
                 return;
             }
         });
-
-        res.redirect('/admin/regions');
-  } catch (error) {
-    console.log(error);
-    return res.send(`Error when trying upload image: ${error}`);
-  }
+    });
+    res.redirect('/admin/regions');
 });
 
 module.exports = router;
