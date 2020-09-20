@@ -110,28 +110,34 @@ router.delete('/delete/:id', function (req, res) {
 
     RegionModel.deleteOne({ _id:req.params.id }, function (err, output) {
         if(err) return res.status(500).json({ error: "database failure" });
-
-        /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
-        if(!output.result.n) return res.status(404).json({ error: "book not found" });
-        res.json({ message: "book deleted" });
-        */
-
-        //console.log('check');
-
-        //res.end();
     })
 
     VRItem.deleteMany({ region_id:req.params.id }, function (err, output) {
         if(err) return res.status(500).json({ error: "database failure" });
 
-        /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
-        if(!output.result.n) return res.status(404).json({ error: "book not found" });
-        res.json({ message: "book deleted" });
-        */
+    });
+    
+    res.redirect(303,'/admin/regions/');
+});
 
-        //console.log(output);
+router.delete('/vrscene_del/:id', function (req, res) {
+    
+    console.log(req.params.id)
+    VRItem.find({'_id': req.params.id}, function (err, vritem) {
+        if (err) return res.status(500).json({ error: err });
+        if (vritem)
+        {
+            for(var item of vritem)
+            {
+                const obj_id = new mongoose.Types.ObjectId(item.image_file);
+                gfs.delete(obj_id);
+            }
+        }
+    });
 
-        //res.end();
+    VRItem.deleteMany({ _id:req.params.id }, function (err, output) {
+        if(err) return res.status(500).json({ error: "database failure" });
+
     });
     
     res.redirect(303,'/admin/regions/');
